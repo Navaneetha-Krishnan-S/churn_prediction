@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customer Churn Prediction</title>
+
+    <!-- Bootstrap CDN for Styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Dark Theme Styling */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        /* White Input Fields */
+        .form-control, .form-select {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #444;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #f8f9fa;
+            border-color: #00bcd4;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #00bcd4;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #008c9e;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2><u>Customer Churn Prediction</u></h2>
+
+    <form action="/" method="POST" onsubmit="return validateForm()">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Dependents">Dependents:</label>
+                <select class="form-select" id="Dependents" name="Dependents">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="tenure">Tenure (in months):</label>
+                <input type="number" class="form-control" id="tenure" name="tenure" placeholder="e.g. 12">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="OnlineSecurity">Online Security:</label>
+                <select class="form-select" id="OnlineSecurity" name="OnlineSecurity">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="OnlineBackup">Online Backup:</label>
+                <select class="form-select" id="OnlineBackup" name="OnlineBackup">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="DeviceProtection">Device Protection:</label>
+                <select class="form-select" id="DeviceProtection" name="DeviceProtection">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="TechSupport">Tech Support:</label>
+                <select class="form-select" id="TechSupport" name="TechSupport">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Contract">Contract Type:</label>
+                <select class="form-select" id="Contract" name="Contract">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Month-to-month">Month-to-month</option>
+                    <option value="One year">One year</option>
+                    <option value="Two year">Two year</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="PaperlessBilling">Paperless Billing:</label>
+                <select class="form-select" id="PaperlessBilling" name="PaperlessBilling">
+                    <option value="" selected disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="MonthlyCharges">Monthly Charges:</label>
+                <input type="text" class="form-control" id="MonthlyCharges" name="MonthlyCharges" placeholder="e.g. 50.75">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="TotalCharges">Total Charges:</label>
+                <input type="text" class="form-control" id="TotalCharges" name="TotalCharges" placeholder="e.g. 1200.50">
+            </div>
+
+            <div class="col-12 mt-3">
+                <button type="submit" class="submit-btn">Predict Churn</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Prediction Result -->
+    <div class="result-box">
+        <p><strong>{{op1}}</strong></p>
+        <p><strong>{{op2}}</strong></p>
+    </div>
+</div>
+
+<!-- JavaScript Validation -->
+<script>
+    function validateForm() {
+        let inputs = document.querySelectorAll(".form-control, .form-select");
+        for (let input of inputs) {
+            if (input.value === "" || input.value === null) {
+                alert("Please fill out all fields before submitting.");
+                input.focus();
+                return false; // Prevent form submission
+            }
+        }
+        return true; // Allow form submission
+    }
+</script>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
